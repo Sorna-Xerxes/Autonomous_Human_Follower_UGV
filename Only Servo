@@ -1,45 +1,55 @@
 import serial
 import time
 
-def send_servo_angle(angle):
-    port_name = "/dev/ttyACM0"
-    stm32 = serial.Serial(port_name, 9600, timeout=1)
-    print("Serial port opened")
+port_name = "/dev/ttyACM0"
+stm32 = serial.Serial(port_name, 9600, timeout=1)
+print("Serial port opened")
 
-    # Command to set servo angle
-    command_set_angle = 0x01
+# Send a known packet value to observe servo behavior
+packet_value = 130
+packet = bytearray()
+packet.append(0x01)  # Command to set PWM
+packet += packet_value.to_bytes(4, byteorder='big')
+print("Sending packet:", packet)
 
-    # Convert angle to a 32-bit integer (4 bytes)
-    angle_bytes = angle.to_bytes(4, byteorder='big')  # Convert angle to 4-byte integer (big-endian)
-    
-    # Construct the command packet
-    packet = bytearray()
-    packet.append(command_set_angle)
-    packet.extend(angle_bytes)  # Append the 4-byte angle to the packet
-    print("Sending command packet:", packet)
+stm32.write(packet)
+time.sleep(0.1)
 
-    # Send the packet to STM32
-    stm32.write(packet)
-    time.sleep(0.1)  # Optional: add a delay if needed
+data = stm32.readline().decode("utf-8").strip()
+print("Response:", data)
 
-    # Read response from STM32 (if any)
-    data = stm32.readline().decode("utf-8")
-    print("Received response:", data)
+# Given values
+x1 = 0    # Corresponding to 0 degrees
+y1 = 18   # Packet value for 0 degrees
+x2 = 180  # Corresponding to 180 degrees
+y2 = 130  # Packet value for 180 degrees
+x_target = 180  # Target angle in degrees
 
-    # Close the serial port
-    stm32.close()
+# Calculate slope (m)
+m = (y2 - y1) / (x2 - x1)
 
-if __name__ == "__main__":
-    try:
-        # Prompt user for servo angle
-        angle_degrees = int(input("Enter servo angle (0-180 degrees): "))
-        
-        # Check if angle is within valid range (0-180)
-        if 0 <= angle_degrees <= 180:
-            # Convert angle from degrees to the corresponding STM32 value (0-255)
-            servo_angle_stm32 = int(angle_degrees * 255 / 180)
-            send_servo_angle(servo_angle_stm32)
-        else:
-            print("Invalid angle. Please enter an angle between 0 and 180 degrees.")
-    except ValueError:
-        print("Invalid input. Please enter a valid integer value.")
+# Calculate y-intercept (b) using y = m * x + b and the point (x1, y1)
+b = y1 - m * x1
+
+# Calculate the packet size (y_target) for the target angle (x_target)
+y_target = m * x_target + b
+
+# Round the packet size to an integer (if needed)
+packet_size_90_degrees = int(round(y_target))
+
+print("Packet size for 90 degrees:", packet_size_90_degrees)
+
+# Send the calculated PWM value to set the servo to 90 degrees
+packet = bytearray()
+packet.append(0x01)  # Command to set PWM
+packet += packet_size_90_degrees.to_bytes(4, byteorder='big')  # Use correct variable name
+
+print("Sending PWM command for 90 degrees:", packet)
+stm32.write(packet)
+time.sleep(0.1)
+
+data = stm32.readline().decode("utf-8").strip()
+print("Response:", data)
+
+stm32.close()
+print("Serial port closed")
