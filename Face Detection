@@ -1,0 +1,185 @@
+import cv2
+import numpy as np
+import serial
+import time
+from flask import Flask, Response
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Load the Cascade model for face detection
+FaceCascade = cv2.CascadeClassifier('/home/hal9000/catkin_ws/src/opencv_pipelines/src/haarcascade_frontalface_default.xml')
+
+# Image scaling factor
+scalar = 5
+
+# Serial port initialization
+port_name = "/dev/ttyACM0"
+stm32 = serial.Serial(port_name, 9600, timeout=1)
+print("Serial port opened")
+
+# PID parameters
+panning_pid = {'kp': 0.1, 'ki': 0.01, 'kd': 0.01}
+tilting_pid = {'kp': 0.1, 'ki': 0.01, 'kd': 0.01}
+
+# Variables for PID control
+panning_error_integral = 0
+panning_previous_error = 0
+tilting_error_integral = 0
+tilting_previous_error = 0
+
+# Function to map angle to packet size for panning (horizontal)
+def map_panning_angle_to_packet(angle):
+    if angle < -90:
+        angle = -90
+    elif angle > 90:
+        angle = 90
+    return int(21 + ((angle + 90) / 180) * (129 - 21))
+
+# Function to map angle to packet size for tilting (vertical)
+def map_tilting_angle_to_packet(angle):
+    if angle < -90:
+        angle = -90
+    elif angle > 90:
+        angle = 90
+    return int(129 - ((angle + 90) / 180) * (129 - 21))
+
+# Function to send packet to STM32 and print response
+def send_packet(packet):
+    print("Sending packet:", packet)
+    stm32.write(packet)
+    time.sleep(0.1)
+    data = stm32.readline().decode("utf-8").strip()
+    print("Response:", data)
+
+# Function to apply PID control
+def apply_pid_control(error, previous_error, error_integral, pid_params):
+    kp = pid_params['kp']
+    ki = pid_params['ki']
+    kd = pid_params['kd']
+    # Proportional term
+    p = kp * error
+    # Integral term
+    error_integral += error
+    i = ki * error_integral
+    # Derivative term
+    d = kd * (error - previous_error)
+    # Update previous error
+    previous_error = error
+    return p + i + d, error_integral, previous_error
+
+# Function to track the face and control servos
+def track_face():
+    global panning_error_integral, panning_previous_error, tilting_error_integral, tilting_previous_error
+
+    while True:
+        # Capture frame from the camera
+        ret, frame = cap.read()
+        if not ret:
+            print('End of video')
+            break
+
+        # Get the dimensions of the frame
+        height, width, _ = frame.shape
+
+        # Resize the frame
+        frame_small = cv2.resize(frame, (int(width / scalar), int(height / scalar)), interpolation=cv2.INTER_CUBIC)
+
+        # Convert the color image to grayscale
+        gray = cv2.cvtColor(frame_small, cv2.COLOR_BGR2GRAY)
+
+        # Detect faces in the frame
+        faces = FaceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.1,
+            minNeighbors=5
+        )
+
+        # Draw a line in the frame center
+        cv2.rectangle(frame_small, (int(width / (2 * scalar)) - 1, int(height / (2 * scalar)) - 1),
+                      (int(width / (2 * scalar)) + 1, int(height / (2 * scalar)) + 1), (255, 255, 255), -1)
+
+        # Draw rectangles around the detected faces
+        for (x, y, w, h) in faces:
+            # Scale the ROI back to the original size
+            x *= scalar
+            y *= scalar
+            w *= scalar
+            h *= scalar
+
+            # Draw the bounding box
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
+
+            # Calculate the center of the bounding box
+            bbox_center_x = x + w // 2
+            bbox_center_y = y + h // 2
+
+            # Draw a dot at the center of the bounding box
+            cv2.circle(frame_small, (bbox_center_x // scalar, bbox_center_y // scalar), 2, (0, 0, 255), -1)
+
+            # Calculate the error difference in X and Y
+            error_x = width // 2 - bbox_center_x  # Inverting sign for panning
+            error_y = height // 2 - bbox_center_y  # Inverting sign for tilting
+
+            # Apply PID control for panning
+            panning_output, panning_error_integral, panning_previous_error = apply_pid_control(error_x, panning_previous_error, panning_error_integral, panning_pid)
+            # Apply PID control for tilting
+            tilting_output, tilting_error_integral, tilting_previous_error = apply_pid_control(error_y, tilting_previous_error, tilting_error_integral, tilting_pid)
+
+            # Map PID output to angles for panning and tilting servos
+            target_panning_angle = panning_output * 90 / (width / 2)
+            target_tilting_angle = tilting_output * 90 / (height / 2)
+
+            # Map angles to packet sizes for panning and tilting
+            panning_packet_size = map_panning_angle_to_packet(target_panning_angle)
+            tilting_packet_size = map_tilting_angle_to_packet(target_tilting_angle)
+
+            # Check if packet sizes are valid
+            if panning_packet_size is not None and tilting_packet_size is not None:
+                # Create packets for panning and tilting
+                packet_panning = bytearray()
+                packet_panning.append(0x02)  # Command for horizontal panning
+                packet_panning += panning_packet_size.to_bytes(4, byteorder='big')
+
+                packet_tilting = bytearray()
+                packet_tilting.append(0x01)  # Command for vertical tilting
+                packet_tilting += tilting_packet_size.to_bytes(4, byteorder='big')
+
+                # Send packets for panning and tilting
+                send_packet(packet_panning)
+                send_packet(packet_tilting)
+
+            # Print error difference in values ranging from -90 to 90 in X & Y above the bounding box
+            cv2.putText(frame_small, f"Error X: {error_x:.2f}", (bbox_center_x // scalar - 25, bbox_center_y // scalar - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            cv2.putText(frame_small, f"Error Y: {error_y:.2f}", (bbox_center_x // scalar - 25, bbox_center_y // scalar - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+        # Encode frame as JPEG image
+        (flag, encodedImage) = cv2.imencode(".jpg", frame_small)
+
+        # Ensure the frame was successfully encoded
+        if not flag:
+            continue
+
+        # Yield the output frame in the byte format
+        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+
+# Route to stream the video frames
+@app.route('/')
+def video_feed():
+    return Response(track_face(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Main function
+if __name__ == '__main__':
+    # Create a GStreamer pipeline to capture frames from the camera
+    pipeline = "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv flip-method=2 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink"
+    cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
+
+    if not cap.isOpened():
+        print("Error opening stream")
+    else:
+        # Run the Flask app
+        app.run(host='18.125.5.101', port=5000, debug=False)
+
+    # Close the serial port
+    stm32.close()
+    print("Serial port closed")
