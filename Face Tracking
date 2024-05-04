@@ -15,7 +15,7 @@ scalar = 5
 
 # Serial port initialization
 port_name = "/dev/ttyACM0"
-stm32 = serial.Serial(port_name, 9600, timeout=1)
+stm32 = serial.Serial(port_name, 115200, timeout=1)
 print("Serial port opened")
 
 # PID parameters
