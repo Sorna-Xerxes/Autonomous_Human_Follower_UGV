@@ -27,7 +27,7 @@ The following **block diagram** illustrates the system architecture and data flo
 - Power Supply Adapter (5V)
 - USB Cable
 
-### STM32 Cube IDE figurtions:
+### STM32 Cube IDE configurtions:
 ![image](https://github.com/user-attachments/assets/1edb2786-5adc-478e-a4d0-8a8df31c877e)
 
 ![Task 1 printout](https://github.com/user-attachments/assets/27d47c7b-5fde-479e-8fb3-9a83fcd615ce)
@@ -38,66 +38,29 @@ The following **block diagram** illustrates the system architecture and data flo
 ### Python programming algorithm:
 ![python programming methodology_page-0001](https://github.com/user-attachments/assets/bd274363-8dd0-43e6-8fe4-92e57328f67f)
 
-### Output:
+### Output of Task 1 & Task 2:
 ![Task1](https://github.com/user-attachments/assets/e20d1e41-4637-4e66-804e-3fe6f59beed7)
 
-
-## INSTRUCTIONS
-To run the code:
-
-### STM32 Firmware:
-- Import the provided STM32 project file Project_Gyro.zip into STM32CubeIDE. (Unarchive it into the STM32 Workspace before importing).
-- All necessary project configurations, such as enabling USB communication and integrating the gyroscope sensor, have already been pre-configured. These settings encompass connectivity interfaces (SPI, I2C), clock configurations, baud rates (9600), etc.
-- Flash the firmware onto the STM32 development board using STM32CubeIDE.
-  
-![STM32_Printout_ _Configurations](https://github.com/Sorna-Xerxes/Jetson-Nano-RxTx-Gyro-from-STM32-with-LED/assets/147555989/96b94cbe-d52a-43ed-8354-0e616d482035)
-
-  
-### Jetson Nano Connection with Visual Code:
-
-- **Jetson Nano runs headless:** It operates without a monitor, keyboard, or mouse.
-- **Configure network for SSH access:** Adjust network settings to connect to Jetson Nano remotely.
-- **Use Visual Studio Code to manage port gateway:** VS Code sets up communication with Jetson Nano.Ensure that Python 3 is installed on Visual Code. Install the necessary dependencies by running the following command in the terminal:
-
-Install pySerial on Jetson Nano
-```bash
-unzip pyserial-master.zip
-cd pyserial-master
-sudo python3 setup.py install
-```
-- **Setup Communication Device Class on STM32:**
-Once connected figure out the address of the STM32, this can be done by running the following command in the terminal:
-```bash
-ls /dev/ttyA*
-```
-   set the access permissions on the device’s address by running the following, remembering to replace with the device’s address.
-```bash
-sudo chmod 666 /dev/ttyACM0
-```
-## PYTHON SCRIPT LOGIC
-The `VS Code - X,Y,Z LED Logic (Final).py` provides real-time indication of the roll, pitch and yaw angles of the STM32 development board through the onboard LEDs. As the orientation of the board changes, the LEDs adjust accordingly to reflect the current roll and pitch angles. This visual feedback allows users to monitor the orientation of the device and make informed decisions based on its position
-
-- **Request Gyro data**: print X,Y,Z of Previous posiiton, Current Position
-- **Parsing Gyro Data**: calculates its difference
-- **LED Logic**:
-```
-x_diff is > 5000, it's a "Pitch Down" movement. (LED 4)
-x_diff is < -5000, it's a "Pitch Up" movement. (LED 0)
-y_diff is > 20000, it's a "Roll West" movement (LED 6)
-y_diff is < -20000, it's a "Roll East" movement. (LED 2)
-```
-## OUTCOME
-The STM32 Roll, Pitch and Yaw Indicator project demonstrates the integration of gyroscopic data sensing and LED control to create a practical orientation indicator system. The project showcases the capabilities of microcontroller-based systems for sensor integration and real-time data processing. Additionally, the project serves as a foundation for further exploration into embedded systems development and sensor-based applications.
+### Output of Task 3:
+![image](https://github.com/user-attachments/assets/4c047949-f696-47fb-af1a-e12225b4ee47)
 
 ## DEPENDENCIES
 
-- **PySerial:** It is a Python library used for serial communication. It provides support for accessing serial ports and communication with serial devices. Install PySerial using the following command:
-```bash
-pip install pyserial
-```
-- **re:** The regular expression module in Python, utilized for pattern matching with regular expressions. In this context, it's employed to `extract x, y, and z coordinates from gyro data`.
+**IMU Headers:** Declarations and prototypes for an accelerometer module, serving as an interface between application code and accelerometer functionality.
 
-- **time:** Python's standard library module offering various time-related functions. Within the code, it `introduces delays between operations`, preventing the code from executing too rapidly and potentially overloading the connected device.
+Declarations specific to the LSM303AGR 3D accelerometer and magnetometer, including register addresses and function prototypes.
+
+Declarations for the STM32F3 Discovery board's accelerometer, providing macros and function prototypes
+
+**IMU Source Files:** Implementation of functions declared in lsm303agr.h, handling interactions with the LSM 303AGR sensor.
+
+Implementation of functions from stm32f3 discovery accelerometer.h, tailored for the STM32F3 Discovery board's accelerometer.
+
+**Driver Dependency:** Dependency on the L3G20 gyroscope sensor, possibly including header files, source files, or precompiled libraries for additional motion data or functionality.
+
+**MonoSLAM (Monocular Simultaneous Localization and Mapping) package:** It enables real-time localization and mapping using a single camera
+
+**VIO:** It improve a robot's understanding of its surroundings by combining visual and inertial data
 
 ## TABLE OF CONTENTS
 
