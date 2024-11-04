@@ -1,4 +1,5 @@
 # Multi-Sensory Fusion for Autonomous Camera Control and Navigation
+![image](https://github.com/user-attachments/assets/1b704d56-c9cf-424e-8e56-99f5b54bc97c)
 
 ## ABSTRACT
 **Task 1,** a Python script leveraging computer vision techniques and OpenCV library will be developed to detect humans within a camera's view. A control loop will then adjust the camera orientation to keep the human centrally located in the frame.
