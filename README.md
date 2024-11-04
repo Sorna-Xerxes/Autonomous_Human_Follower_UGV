@@ -79,10 +79,10 @@ roslaunch mono-slam static_tranform_world.launch
 
 | File Name        | Brief           |
 | ------------- |:-------------:|
-| P.zip      | Contains the entire STM32 project that is to be flashed onto the STM32 |
-| VS Code - 4 LED Logic      | Contains the Python script with 4 LED Logic that is to be run in VS Code after setting up the connection      |
-| pyserial-master.zip      | Install pySerial on Jetson Nano      |
-|  VS Code - 8 LED Logic      | Contains the Python code with 8 LED logic where the code can be improvised with data parsing or improvising using data fusion      |
+| ES-Project2-Task1.zip      | Contains the entire STM32 firmware that is to be flashed onto the STM32 for Task1 |
+| ES-Project2-Task2.zip      | Contains the entire STM32 firmware that is to be flashed onto the STM32 for Task2|
+| mono-slam.zip      | contains the slam Cmakes for ROS      |
+|  my_jetson_robot.zip      | contains the IMU for ROS      |
 
 ## CREDITS
 The STM32F3 discovery board and Jetson Nano were provided as part of the project materials for the completion of our coursework in Embedded Systems for the MSc in Robotics, AI, and Autonomous Systems at City, University of London.
