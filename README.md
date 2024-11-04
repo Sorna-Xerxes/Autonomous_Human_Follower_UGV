@@ -29,6 +29,7 @@ The following **block diagram** illustrates the system architecture and data flo
 ### Software Configurtions:
 ![image](https://github.com/user-attachments/assets/1edb2786-5adc-478e-a4d0-8a8df31c877e)
 
+![Task 1 printout](https://github.com/user-attachments/assets/27d47c7b-5fde-479e-8fb3-9a83fcd615ce)
 
 ### Software Requirements:
 
