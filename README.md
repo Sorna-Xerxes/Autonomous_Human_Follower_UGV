@@ -62,11 +62,24 @@ Implementation of functions from stm32f3 discovery accelerometer.h, tailored for
 
 **VIO:** It improve a robot's understanding of its surroundings by combining visual and inertial data
 
+## HOW TO RUN (Terminal Commands)
+```bash
+roscd mono-slam/conf
+rosrun mono-slam mono-slam conf.cfg /camera/image_raw:=/csi_cam_0/image_raw
+
+sudo apt update -y
+sudo apt-get install -y libconfig++-dev
+roslaunch jetson_csi_cam jetson_csi_cam.launch
+
+roslaunch mono-slam start_rviz.launch
+roslaunch mono-slam static_tranform_world.launch 
+```
+
 ## TABLE OF CONTENTS
 
 | File Name        | Brief           |
 | ------------- |:-------------:|
-| Project_Gyro_LED.zip      | Contains the entire STM32 project that is to be flashed onto the STM32 |
+| P.zip      | Contains the entire STM32 project that is to be flashed onto the STM32 |
 | VS Code - 4 LED Logic      | Contains the Python script with 4 LED Logic that is to be run in VS Code after setting up the connection      |
 | pyserial-master.zip      | Install pySerial on Jetson Nano      |
 |  VS Code - 8 LED Logic      | Contains the Python code with 8 LED logic where the code can be improvised with data parsing or improvising using data fusion      |
