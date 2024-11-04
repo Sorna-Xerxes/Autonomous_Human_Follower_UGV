@@ -33,7 +33,7 @@ The following **block diagram** illustrates the system architecture and data flo
 ![Task 1 printout](https://github.com/user-attachments/assets/27d47c7b-5fde-479e-8fb3-9a83fcd615ce)
 
 ### VSCode Requirements:
-![image](https://github.com/user-attachments/assets/62aafecf-deaa-40bf-80b6-8efa85828417)
+![image](https://github.com/user-attachments/assets/fb8cde01-3c44-4cf6-85b8-4465bf757b2d)
 
 ### Python programming algorithm:
 ![python programming methodology_page-0001](https://github.com/user-attachments/assets/bd274363-8dd0-43e6-8fe4-92e57328f67f)
