@@ -2,7 +2,9 @@
 
 ## ABSTRACT
 **Task 1,** a Python script leveraging computer vision techniques and OpenCV library will be developed to detect humans within a camera's view. A control loop will then adjust the camera orientation to keep the human centrally located in the frame.
+
 **Task 2** involves writing firmware for an STM32 microcontroller board to collect IMU data and correct any camera misalignment caused by robot movement or environmental factors. Sensor fusion algorithms will be implemented to enhance tracking accuracy.
+
 **Task 3** focuses on integrating a Visual-Inertial Odometry (VIO) system to improve the robot's spatial awareness and movement accuracy. This involves fusing visual information from cameras with inertial data from IMUs, enabling precise navigation and mapping without GPS.
 
 The project outcomes include gaining proficiency in implementing computer vision algorithms, developing real-time firmware for microcontrollers, applying sensor fusion algorithms, and understanding Visual-Inertial Odometry principles. Soft skills such as problem-solving, project management, teamwork, and communication will also be enhanced throughout the project.
@@ -12,27 +14,20 @@ Overall, this project seeks to advance the capabilities of autonomous systems in
 ## SYSTEM OVERVIEW
 The following **block diagram** illustrates the system architecture and data flow between the components:
 
-![image](https://github.com/user-attachments/assets/fe0b9bdb-3cb6-479d-b565-30da3adf204a)
-
-### Hardware Requirements:
-	STM32 F3 Discovery
-	Jetson Nano
-	Camera - Raspberry Pi
-	Servo Motors x 2 (180°)
-	Pan-Tilt Camera Mount
-	Ethernet Cable
-	Power Supply Adapter (5V)
-	USB Cable
-
 ![image](https://github.com/user-attachments/assets/b70b8875-493a-4d55-9569-f327590ae4d2)
 
+### Hardware Requirements:
+- STM32 F3 Discovery
+- Jetson Nano
+- Camera - Raspberry Pi
+- Servo Motors x 2 (180°)
+- Pan-Tilt Camera Mount
+- Ethernet Cable
+- Power Supply Adapter (5V)
+- USB Cable
 
-**2. NVDIA Jetson Nano (Micro Processor):** The NVIDIA Jetson Nano is a small, powerful computer designed for AI and robotics applications. Jetson Nano is capable of running complex algorithms and deep learning models, making it suitable for tasks such as image recognition, object detection, and autonomous navigation.
-- Quad-core ARM Cortex-A57 CPU with a NVIDIA Maxwell GPU.
-- Various interfaces: USB, HDMI, Ethernet, CSI camera interface, and GPIO headers.
-
-![Jetson_Nano](https://github.com/Sorna-Xerxes/Jetson_Nano_Rx_STM32_Gyro_Tx_LED/assets/147555989/62be1bb8-5a20-448f-b5b2-cfbc1a061141)
-
+### Software Configurtions:
+![image](https://github.com/user-attachments/assets/1edb2786-5adc-478e-a4d0-8a8df31c877e)
 
 
 ### Software Requirements:
