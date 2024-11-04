@@ -26,23 +26,19 @@ The following **block diagram** illustrates the system architecture and data flo
 - Power Supply Adapter (5V)
 - USB Cable
 
-### Software Configurtions:
+### STM32 Cube IDE figurtions:
 ![image](https://github.com/user-attachments/assets/1edb2786-5adc-478e-a4d0-8a8df31c877e)
 
 ![Task 1 printout](https://github.com/user-attachments/assets/27d47c7b-5fde-479e-8fb3-9a83fcd615ce)
 
-### Software Requirements:
+### VSCode Requirements:
+![image](https://github.com/user-attachments/assets/62aafecf-deaa-40bf-80b6-8efa85828417)
 
-**1.STM32 Cube IDE:** Using STM32CubeIDE, an integrated development environment for STM32 microcontrollers, the firmware is developed to interface with the gyroscope sensor, collect data from onboard sensors, read the roll, pitch, and yaw angles, and transmit them over USB to the Jetson Nano.
+### Python programming algorithm:
+![python programming methodology_page-0001](https://github.com/user-attachments/assets/bd274363-8dd0-43e6-8fe4-92e57328f67f)
 
-**2. Visual Studio Code:** Visual Studio Code connects to the NVIDIA Jetson Nano through a remote connection. The Python script running on the Jetson Nano communicates with the STM32 board over USB to receive gyroscopic data. It reads and parses the received data to extract the roll, pitch, and yaw angles, and then controls the onboard LEDs of the STM32 board to visually indicate these angles. The script utilizes the PySerial library for serial communication with the STM32 board.
-
-### Data Parameters:
-- **Roll Angle:** The angle of rotation around the longitudinal axis of the STM32 board, measured in degrees.
-- **Pitch Angle:** The angle of rotation around the lateral axis of the STM32 board, measured in degrees.
-- **Yaw Angle:** The angle of rotation around the vertical axis of the STM32 board, measured in degrees.
-  
-![Aircraft_Axis](https://github.com/Sorna-Xerxes/Jetson_Nano_Rx_STM32_Gyro_Tx_LED/assets/147555989/908bf1d1-fe9f-48da-80b2-1946cadb9f12)
+### Output:
+![Task1](https://github.com/user-attachments/assets/e20d1e41-4637-4e66-804e-3fe6f59beed7)
 
 
 ## INSTRUCTIONS
