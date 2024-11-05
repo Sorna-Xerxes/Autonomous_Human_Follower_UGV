@@ -92,3 +92,6 @@ Contributions to this project are highly appreciated. To contribute:
 - Fork the repository.
 - Make your changes or enhancements.
 - Submit a pull request for review.
+
+## LICENSE
+This project is licensed under the MIT License.
